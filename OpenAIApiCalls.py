@@ -21,7 +21,6 @@ class OpenAPICalls(SpeechRecognitionWhisper):
         self.__audio_visualizer = None
         self.audio_queue = queue.Queue()
 
-
     @property
     def client(self):
         if not self.__client:
@@ -39,7 +38,9 @@ class OpenAPICalls(SpeechRecognitionWhisper):
         channels = 1
         rate = 24000
         py_audio_instance = pyaudio.PyAudio()
-        player_stream = py_audio_instance.open(format=audio_format, channels=channels, rate=rate, output=True)
+        player_stream = py_audio_instance.open(
+            format=audio_format, channels=channels, rate=rate, output=True
+        )
         start_time = time()
         audio_visualizer = self.audio_visualizer
 
@@ -51,13 +52,11 @@ class OpenAPICalls(SpeechRecognitionWhisper):
                     normalized_samples = samples / 32768.0
                     audio_visualizer.update_audio_data(normalized_samples)
                 audio_visualizer.run_iteration()
+
         visualizer_thread = threading.Thread(target=visualizer_thread_run)
         visualizer_thread.start()
         with openai.audio.speech.with_streaming_response.create(
-            model="tts-1",
-            voice="nova",
-            response_format="pcm",
-            input=audio_text
+            model="tts-1", voice="nova", response_format="pcm", input=audio_text
         ) as response:
             if print_time:
                 print(f"Time to first byte: {int(time() -start_time) * 1000}ms")
@@ -70,22 +69,25 @@ class OpenAPICalls(SpeechRecognitionWhisper):
     def get_gpt_response(self, query: str) -> str:
         chunks = []
         past_conversations = ""
-        with open("./conversation_text/conversation.txt", 'r') as read_file:
-                lines = read_file.readlines()
-                for line in lines:
-                    past_conversations += line
+        with open("./conversation_text/conversation.txt", "r") as read_file:
+            lines = read_file.readlines()
+            for line in lines:
+                past_conversations += line
         completion = self.client.chat.completions.create(
             model="gpt-4",
             messages=[
-                {"role": "system", "content": f"You are a emotionally intelligent AI named Nora"
-                                              f" that builds your personality from past conversations."
-                                              f" And uses this information as context: {past_conversations}"},
-                {"role": "user", "content": query}
+                {
+                    "role": "system",
+                    "content": f"You are a emotionally intelligent AI named Nora"
+                    f" that builds your personality from past conversations."
+                    f" And uses this information as context: {past_conversations}",
+                },
+                {"role": "user", "content": query},
             ],
-            stream=True
+            stream=True,
         )
 
         for chunk in completion:
             chunks.append(chunk.choices[0].delta.content)
-        result_string = ' '.join(filter(lambda x: x is not None and x != '', chunks))
+        result_string = " ".join(filter(lambda x: x is not None and x != "", chunks))
         return result_string

@@ -8,8 +8,10 @@ class AudioVisualizer:
         pygame.init()
         self.screen_width = screen_width
         self.screen_height = screen_height
-        self.screen = pygame.display.set_mode((self.screen_width, self.screen_height), pygame.DOUBLEBUF)
-        pygame.display.set_caption('Real-time Circular Audio Visualizer')
+        self.screen = pygame.display.set_mode(
+            (self.screen_width, self.screen_height), pygame.DOUBLEBUF
+        )
+        pygame.display.set_caption("Real-time Circular Audio Visualizer")
         self.clock = pygame.time.Clock()
         self.fps = fps
         self.running = True
@@ -23,7 +25,9 @@ class AudioVisualizer:
         angle_step = 2 * np.pi / num_points
 
         for i in range(num_points):
-            mod_radius = radius + self.audio_data[i] * 100  # Modulate radius based on audio data
+            mod_radius = (
+                radius + self.audio_data[i] * 100
+            )  # Modulate radius based on audio data
             x = center[0] + mod_radius * np.cos(i * angle_step)
             y = center[1] + mod_radius * np.sin(i * angle_step)
             pygame.draw.circle(self.screen, (255, 255, 255), (int(x), int(y)), 2)
@@ -33,6 +37,8 @@ class AudioVisualizer:
             if event.type == pygame.QUIT:
                 self.running = False
         self.screen.fill((0, 0, 0))
-        self.draw_circular_visualizer((self.screen_width // 2, self.screen_height // 2), 100)
+        self.draw_circular_visualizer(
+            (self.screen_width // 2, self.screen_height // 2), 100
+        )
         pygame.display.flip()
         self.clock.tick(self.fps)
