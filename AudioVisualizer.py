@@ -17,15 +17,16 @@ class AudioVisualizer:
         self.audio_data = np.zeros(100)
         self.last_audio_data = np.zeros(100)
         self.window = np.hanning(100)  # Hanning window for smoothing
-        self.update_event = threading.Event()
-        self.update_thread = threading.Thread(target=self.update_loop)
-        self.update_thread.start()
+        self.audio_data_queue = queue.Queue()
+        self.visualization_thread = threading.Thread(target=self.visualization_loop)
+        self.visualization_thread.start()
 
-    def update_loop(self):
+    def visualization_loop(self):
         while self.running:
-            self.update_event.wait()
-            self.update_event.clear()
-            self.run_iteration()
+            if not self.audio_data_queue.empty():
+                audio_data = self.audio_data_queue.get()
+                self.update_audio_data(audio_data)
+                self.run_iteration()
 
     def update_audio_data(self, audio_data):
         if audio_data.any():
@@ -33,7 +34,6 @@ class AudioVisualizer:
         else:
             self.audio_data = self.last_audio_data
         self.last_audio_data = self.audio_data
-        self.update_event.set()
 
     def draw_circular_visualizer(self, center, radius):
         num_points = len(self.audio_data)

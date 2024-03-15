@@ -19,7 +19,6 @@ class OpenAPICalls(SpeechRecognitionWhisper):
         self.api_key = os.getenv("OPENAI_API_KEY")
         self.__audio_visualizer = None
         self.audio_playback_queue = queue.Queue()
-        self.audio_visualization_queue = queue.Queue()
 
     @property
     def client(self):
@@ -44,16 +43,6 @@ class OpenAPICalls(SpeechRecognitionWhisper):
         start_time = time()
         audio_visualizer = self.audio_visualizer
 
-        def visualizer_thread_run():
-            while audio_visualizer.running or not self.audio_visualization_queue.empty():
-                if not self.audio_visualization_queue.empty():
-                    chunk = self.audio_visualization_queue.get()
-                    samples = np.frombuffer(chunk, dtype=np.int16)
-                    normalized_samples = samples / 32768.0
-                    audio_visualizer.update_audio_data(normalized_samples)
-
-        visualizer_thread = threading.Thread(target=visualizer_thread_run)
-        visualizer_thread.start()
         with openai.audio.speech.with_streaming_response.create(
             model="tts-1", voice="nova", response_format="pcm", input=audio_text
         ) as response:
@@ -62,7 +51,9 @@ class OpenAPICalls(SpeechRecognitionWhisper):
             for chunk in response.iter_bytes(chunk_size=1024):
                 player_stream.write(chunk)
                 self.audio_playback_queue.put(chunk)
-                self.audio_visualization_queue.put(chunk)
+                samples = np.frombuffer(chunk, dtype=np.int16)
+                normalized_samples = samples / 32768.0
+                audio_visualizer.audio_data_queue.put(normalized_samples)
         if print_time:
             print(f"Done in {int((time() - start_time))*1000}ms")
 
