@@ -16,6 +16,11 @@
 ### Linux
 <code>pip3 install -r requirements.txt</code>
 
+## Need to put API key into .env file 
+
+### Create .env file and add OPENAI_API_KEY="Your API key"  python file uses dotenv.load() to load API key from .env file
+
+
 ## Run Assistant.py file
 
 ### Windows
