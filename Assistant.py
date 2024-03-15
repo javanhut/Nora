@@ -14,7 +14,6 @@ class Assistant:
         if not self.__api_calls:
             self.__api_calls = OpenAPICalls()
         return self.__api_calls
-
     def capture_and_respond(self):
         AI = self.api
         user_text = AI.capture_audio()
@@ -23,7 +22,7 @@ class Assistant:
         with open("./conversation_text/conversation.txt", "a") as conversation_file:
             conversation_file.write(f"Friend: {user_text} \n")
             conversation_file.write(response + "\n")
-        thread1 = threading.Thread(target=AI)
+        thread1 = threading.Thread(target=stream)
         thread1.start()
         thread1.join()
         return user_text, response
