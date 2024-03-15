@@ -64,20 +64,22 @@ class OpenAPICalls(SpeechRecognitionWhisper):
             for chunk in response.iter_bytes(chunk_size=1024):
                 player_stream.write(chunk)
                 self.audio_queue.put(chunk)
-        # player_stream.stop_stream()
-        # player_stream.close()
-        # py_audio_instance.terminate()
-        # audio_visualizer.running = False
-        # visualizer_thread.join()
         if print_time:
             print(f"Done in {int((time() - start_time))*1000}ms")
 
     def get_gpt_response(self, query: str) -> str:
         chunks = []
+        past_conversations = ""
+        with open("./conversation_text/conversation.txt", 'r') as read_file:
+                lines = read_file.readlines()
+                for line in lines:
+                    past_conversations += line
         completion = self.client.chat.completions.create(
             model="gpt-4",
             messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "system", "content": f"You are a emotionally intelligent AI named Nora"
+                                              f" that builds your personality from past conversations."
+                                              f" And uses this information as context: {past_conversations}"},
                 {"role": "user", "content": query}
             ],
             stream=True
