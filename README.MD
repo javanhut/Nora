@@ -31,3 +31,4 @@
 
 Notes:
 Issues with sync of visualizer sometimes works better than others. If context wiindow is too large it won't store to txt memory.
+Will have more functionality soon.
