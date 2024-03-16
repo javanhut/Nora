@@ -46,7 +46,7 @@ class AudioVisualizer:
             pygame.draw.circle(self.buffer, (255, 255, 255), (int(x), int(y)), 2)
 
     def run_iteration(self):
-        for event in pygame.event.get():
+        for event in pygame.event.pump():
             if event.type == pygame.QUIT:
                 self.running = False
         self.buffer.fill((0, 0, 0))

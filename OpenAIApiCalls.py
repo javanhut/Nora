@@ -65,7 +65,7 @@ class OpenAPICalls(SpeechRecognitionWhisper):
             for line in lines:
                 past_conversations += line
         completion = self.client.chat.completions.create(
-            model="gpt-4",
+            model="ft:gpt-3.5-turbo-0125:personal:nora1:93WhUaD9",
             messages=[
                 {
                     "role": "system",
