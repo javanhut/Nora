@@ -13,7 +13,10 @@ from numba import jit, cuda
 
 model_list = {"nora1": "ft:gpt-3.5-turbo-0125:personal:nora1:93WhUaD9",
               "nora2": "ft:gpt-3.5-turbo-0125:personal:nora2:9496FstK",
-              "nora3": "ft:gpt-3.5-turbo-0125:personal:noracomplex:94Znw9VR"}
+              "nora3": "ft:gpt-3.5-turbo-0125:personal:noracomplex:94Znw9VR",
+              "nora4": "ft:gpt-3.5-turbo-0125:personal:nora5:955iTjlb",
+              "nora5": "ft:gpt-3.5-turbo-0125:personal:nora5a:956yMHe4",
+              "nora6": "ft:gpt-3.5-turbo-0125:personal:nora5b:95DNR2E8"}
 
 
 # add sarcasm to nora
@@ -73,7 +76,7 @@ class OpenAPICalls(SpeechRecognitionWhisper):
             for line in lines:
                 past_conversations += line
         completion = self.client.chat.completions.create(
-            model=model_list["nora2"],
+            model=model_list["nora6"],
             messages=[
                 {
                     "role": "system",
