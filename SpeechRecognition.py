@@ -25,12 +25,13 @@ class SpeechRecognitionWhisper:
 
     def capture_audio(self) -> str:
         """This method captures audio from the microphone and returns a string."""
-        with Microphone() as source:
+        with Microphone(device_index=2) as source:
             Recognizer().adjust_for_ambient_noise(source)
             print("Capturing audio....")
             audio = Recognizer().listen(source)
         try:
             audio_text = Recognizer().recognize_whisper(audio, language="english")
+            # audio_text = Recognizer().recognize_google(audio)
             return audio_text
         except sr.UnknownValueError:
             print("Whisper couldn't understand audio ")
