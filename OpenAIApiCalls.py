@@ -54,7 +54,7 @@ class OpenAPICalls(SpeechRecognitionWhisper):
         audio_visualizer = self.audio_visualizer
 
         with openai.audio.speech.with_streaming_response.create(
-                model="tts-1", voice="nova", response_format="pcm", input=audio_text
+                model="tts-1", voice="nova", response_format="wav", input=audio_text
         ) as response:
             if print_time:
                 print(f"Time to first byte: {int(time() - start_time) * 1000}ms")
@@ -71,10 +71,13 @@ class OpenAPICalls(SpeechRecognitionWhisper):
     def get_gpt_response(self, query: str) -> str:
         chunks = []
         past_conversations = ""
+        nora_code = ""
         with open("./conversation_text/conversation.txt", "r") as read_file:
             lines = read_file.readlines()
             for line in lines:
                 past_conversations += line
+        with open("./conversation_text/noras_code.txt", "r") as code_file:
+            code_lines = code_file.readlines()
         completion = self.client.chat.completions.create(
             model=model_list["nora6"],
             messages=[
@@ -82,7 +85,8 @@ class OpenAPICalls(SpeechRecognitionWhisper):
                     "role": "system",
                     "content": f"You are a emotionally intelligent AI named Nora"
                                f" that builds your personality from past conversations."
-                               f" And uses this information as context: {past_conversations}",
+                               f" And uses this information as context: {past_conversations}"
+                               f"She can also look at her own code for self improvement{code_lines}",
                 },
                 {"role": "user", "content": query},
             ],
@@ -91,5 +95,5 @@ class OpenAPICalls(SpeechRecognitionWhisper):
 
         for chunk in completion:
             chunks.append(chunk.choices[0].delta.content)
-        result_string = " ".join(filter(lambda x: x is not None and x != "", chunks))
+        result_string ="".join(filter(lambda x: x is not None and x != "", chunks))
         return result_string

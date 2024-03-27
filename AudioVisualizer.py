@@ -46,7 +46,7 @@ class AudioVisualizer:
         angle_step = 2 * np.pi / num_points
 
         for i in range(num_points):
-            mod_radius = radius + self.audio_data[i] * 100  # Scale factor for visualization
+            mod_radius = radius + self.audio_data[i] * 25  # Scale factor for visualization
             x = center[0] + mod_radius * np.cos(i * angle_step)
             y = center[1] + mod_radius * np.sin(i * angle_step)
             pygame.draw.circle(self.buffer, (255, 255, 255), (int(x), int(y)), 2)
