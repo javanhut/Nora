@@ -71,10 +71,15 @@ class OpenAPICalls(SpeechRecognitionWhisper):
     def get_gpt_response(self, query: str) -> str:
         chunks = []
         past_conversations = ""
+        vision_data = ""
         with open("./conversation_text/conversation.txt", "r") as read_file:
             lines = read_file.readlines()
             for line in lines:
                 past_conversations += line
+        with open("./conversation_text/vision_data.txt", "r") as vision_file:
+            vision_info = vision_file.readlines()
+            for sight in vision_info:
+                vision_data += sight
         completion = self.client.chat.completions.create(
             model=model_list["nora6"],
             messages=[
@@ -82,13 +87,14 @@ class OpenAPICalls(SpeechRecognitionWhisper):
                     "role": "system",
                     "content": f"You are a emotionally intelligent AI named Nora"
                                f" that builds your personality from past conversations."
-                               f" And uses this information as context: {past_conversations}",
+                               f" And uses this information as context: {past_conversations}"
+                               f"You can refer to this information for what you see visually and infer the scenery "
+                               f"from: {vision_data}",
                 },
                 {"role": "user", "content": query},
             ],
             stream=True,
         )
-
         for chunk in completion:
             chunks.append(chunk.choices[0].delta.content)
         result_string = " ".join(filter(lambda x: x is not None and x != "", chunks))

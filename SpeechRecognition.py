@@ -25,7 +25,7 @@ class SpeechRecognitionWhisper:
 
     def capture_audio(self) -> str:
         """This method captures audio from the microphone and returns a string."""
-        with Microphone(device_index=2) as source:
+        with Microphone() as source:
             Recognizer().adjust_for_ambient_noise(source)
             print("Capturing audio....")
             audio = Recognizer().listen(source)

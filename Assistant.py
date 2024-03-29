@@ -1,36 +1,25 @@
-import sys
 import threading
 import pygame
-import json
 from OpenAIApiCalls import OpenAPICalls
-
+from OpenAIVisionCalls import OpenVisionCalls
 
 class Assistant:
-
     def __init__(self):
-        self.__api_calls = None
+        self.__api_calls = OpenAPICalls()
 
-    @property
-    def api(self):
-        if not self.__api_calls:
-            self.__api_calls = OpenAPICalls()
-        return self.__api_calls
-
-    def capture_and_respond(self):
-        AI = self.api
+    def comprehend_and_response(self):
+        AI = self.__api_calls
         user_text = AI.capture_audio()
         response = AI.get_gpt_response(user_text)
         stream = AI.open_ai_tts_stream(response)
-        with open("./conversation_text/conversation.txt", "a") as conversation_file:
-            conversation_file.write(f"Friend: {user_text} \n")
-            conversation_file.write(response + "\n")
+        print("User: " + user_text)
+        print("AI: " + response)
+        self.update_conversational_training_data(user_text, response)
+        return user_text, response
+
+    def update_conversational_training_data(self, user_text, response):
         training_data = {
             "messages": [
-                {
-                    "role": "system",
-                    "content": "Nora is an emotionally intelligent thinking and reasoning humanlike being."
-                               "She learns from previous conversations to be more human-like and response like artifical human ."
-                },
                 {
                     "role": "user",
                     "content": user_text
@@ -41,27 +30,28 @@ class Assistant:
                 }
             ]
         }
-        json_data = json.dumps(training_data)
-        with open("./conversation_text/conversational_training_data.txt", "a") as training_data:
-            training_data.write(json_data + "\n")
-        thread1 = threading.Thread(target=stream)
-        thread1.start()
-        thread1.join()
-        return user_text, response
+        with open("./conversation_text/conversational_training_data.txt", "a") as training_data_file:
+            training_data_file.write(str(training_data) + '\n')
 
-    def comprehend_and_response(self):
-        user_text, response = self.capture_and_respond()
-        print("User: " + user_text)
-        print("AI: " + response)
+def run_vision_capture():
+    vision_calls = OpenVisionCalls()
+    vision_calls.capture_frames()
 
-        return user_text
-
-
-if "__main__" == __name__:
+def run_assistant():
+    assistant = Assistant()
     stop_condition = False
     while not stop_condition:
-        assistant = Assistant()
-        user_text = assistant.comprehend_and_response()
+        user_text, response = assistant.comprehend_and_response()
         if "go to" and "sleep" in user_text:
             stop_condition = True
             pygame.quit()
+
+if __name__ == "__main__":
+    vision_thread = threading.Thread(target=run_vision_capture)
+    assistant_thread = threading.Thread(target=run_assistant)
+
+    vision_thread.start()
+    assistant_thread.start()
+
+    vision_thread.join()
+    assistant_thread.join()
