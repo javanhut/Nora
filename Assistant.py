@@ -32,6 +32,8 @@ class Assistant:
         }
         with open("./conversation_text/conversational_training_data.txt", "a") as training_data_file:
             training_data_file.write(str(training_data) + '\n')
+        with open("./conversation_text/conversation.txt", "a") as conversation_file:
+            conversation_file.write(f"Friend:{user_text}\nNora:{response}")
 
 def run_vision_capture():
     vision_calls = OpenVisionCalls()

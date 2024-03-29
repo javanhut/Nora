@@ -23,7 +23,7 @@ class OpenVisionCalls(OpenAPICalls):
                 print("Error: Failed to capture frame.")
                 break
             current_time = time.time()
-            if current_time - start_time >= 5:
+            if current_time - start_time >= 10:
                 start_time = current_time
                 image_file = f"image_{int(start_time)}.jpg"
                 cv.imwrite(image_file, frame)

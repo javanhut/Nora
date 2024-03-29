@@ -97,5 +97,5 @@ class OpenAPICalls(SpeechRecognitionWhisper):
         )
         for chunk in completion:
             chunks.append(chunk.choices[0].delta.content)
-        result_string = " ".join(filter(lambda x: x is not None and x != "", chunks))
+        result_string ="".join(filter(lambda x: x is not None and x != "", chunks))
         return result_string
