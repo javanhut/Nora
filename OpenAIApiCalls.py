@@ -16,7 +16,8 @@ model_list = {"nora1": "ft:gpt-3.5-turbo-0125:personal:nora1:93WhUaD9",
               "nora3": "ft:gpt-3.5-turbo-0125:personal:noracomplex:94Znw9VR",
               "nora4": "ft:gpt-3.5-turbo-0125:personal:nora5:955iTjlb",
               "nora5": "ft:gpt-3.5-turbo-0125:personal:nora5a:956yMHe4",
-              "nora6": "ft:gpt-3.5-turbo-0125:personal:nora5b:95DNR2E8"}
+              "nora6": "ft:gpt-3.5-turbo-0125:personal:nora5b:95DNR2E8",
+              "nora6a": "ft:gpt-3.5-turbo-0125:personal:nora6:98LVx0vY"}
 
 
 # add sarcasm to nora
@@ -81,7 +82,7 @@ class OpenAPICalls(SpeechRecognitionWhisper):
             for sight in vision_info:
                 vision_data += sight
         completion = self.client.chat.completions.create(
-            model=model_list["nora6"],
+            model=model_list["nora6a"],
             messages=[
                 {
                     "role": "system",

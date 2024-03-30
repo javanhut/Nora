@@ -35,9 +35,9 @@ class Assistant:
         with open("./conversation_text/conversation.txt", "a") as conversation_file:
             conversation_file.write(f"Friend:{user_text}\nNora:{response}")
 
-def run_vision_capture():
-    vision_calls = OpenVisionCalls()
-    vision_calls.capture_frames()
+# def run_vision_capture():
+#     vision_calls = OpenVisionCalls()
+#     vision_calls.capture_frames()
 
 def run_assistant():
     assistant = Assistant()
@@ -49,11 +49,11 @@ def run_assistant():
             pygame.quit()
 
 if __name__ == "__main__":
-    vision_thread = threading.Thread(target=run_vision_capture)
+    # vision_thread = threading.Thread(target=run_vision_capture)
     assistant_thread = threading.Thread(target=run_assistant)
 
-    vision_thread.start()
+    # vision_thread.start()
     assistant_thread.start()
 
-    vision_thread.join()
+    # vision_thread.join()
     assistant_thread.join()
