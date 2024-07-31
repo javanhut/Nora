@@ -55,7 +55,7 @@ class OpenAPICalls(SpeechRecognitionWhisper):
         audio_visualizer = self.audio_visualizer
 
         with openai.audio.speech.with_streaming_response.create(
-                model="tts-1", voice="nova", response_format="pcm", input=audio_text
+                model="tts-1-hd", voice="nova", response_format="pcm", input=audio_text
         ) as response:
             if print_time:
                 print(f"Time to first byte: {int(time() - start_time) * 1000}ms")
@@ -82,15 +82,14 @@ class OpenAPICalls(SpeechRecognitionWhisper):
             for sight in vision_info:
                 vision_data += sight
         completion = self.client.chat.completions.create(
-            model=model_list["nora6a"],
+            model="gpt-4o",
             messages=[
                 {
                     "role": "system",
                     "content": f"You are a emotionally intelligent AI named Nora"
                                f" that builds your personality from past conversations."
                                f" And uses this information as context: {past_conversations}"
-                               f"You can refer to this information for what you see visually and infer the scenery "
-                               f"from: {vision_data}",
+                               ,
                 },
                 {"role": "user", "content": query},
             ],

@@ -55,5 +55,7 @@ if __name__ == "__main__":
     # vision_thread.start()
     assistant_thread.start()
 
-    # vision_thread.join()
+
+
+   
     assistant_thread.join()
